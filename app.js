@@ -28,6 +28,7 @@ app.use(express.session({
 
 app.use(function(req, res, next){
         res.locals.user = req.session.user;//res.locals设置整站的全局变量
+        res.locals.search = req.session.search;
         next();
     });
 

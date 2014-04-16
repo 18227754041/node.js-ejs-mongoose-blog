@@ -22,7 +22,8 @@ var Postmodel = mongoose.model('Post',_Post);
 
 module.exports = function(app) {
 	app.get('/', function(req, res){
-        Postmodel.find(function(err,posts){
+        var page = req.query.p ? parseInt(req.query.p) : 1;
+        Postmodel.find().skip((page-1)*6).limit(6).exec(function(err,posts){
             if(err){
                 req.flash('error','error!');
                 res.redirect('/');
@@ -30,6 +31,7 @@ module.exports = function(app) {
             res.render('index',{
                 title: '首页',
                 posts: posts,
+                page: page,
                 error: req.flash('error'),
                 success: req.flash('success')
             });
@@ -45,15 +47,16 @@ module.exports = function(app) {
 	});
 
 	app.get('/u/:user', function(req, res){
-        Postmodel.find({'username':  req.params.user},function(err,posts){
+        var page = req.query.p ? parseInt(req.query.p) : 1;
+        Postmodel.find({'username':  req.params.user}).skip((page-1)*6).limit(6).exec(function(err,posts){
             if(err){
-                req.flash('error', 'error!');
+                req.flash('error','error!');
                 res.redirect('/');
             }
-
             res.render('user',{
                 title: req.params.user,
                 posts: posts,
+                page: page,
                 error: req.flash('error'),
                 success: req.flash('success')
             });
